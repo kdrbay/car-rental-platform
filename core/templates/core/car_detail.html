@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>{{ car.brand }} {{ car.model }}</h2>
+<p>{{ car.description }}</p>
+<p>Цена за день: {{ car.price_per_day }}₽</p>
+<p>Год выпуска: {{ car.year }}</p>
+<p>Местоположение: {{ car.location }}</p>
+{% if car.image %}
+    <img src="{{ car.image.url }}" alt="Фото авто">
+{% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Доступные автомобили</h2>
+<ul>
+    {% for car in cars %}
+        <li>
+            <a href="{% url 'car_detail' car.id %}">{{ car.brand }} {{ car.model }} - {{ car.price_per_day }}₽/день</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
