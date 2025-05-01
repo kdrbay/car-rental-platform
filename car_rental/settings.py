@@ -61,7 +61,7 @@ ROOT_URLCONF = "car_rental.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -141,3 +141,6 @@ LOGOUT_REDIRECT_URL = 'login'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
+LOGIN_REDIRECT_URL = 'car_list'
+LOGOUT_REDIRECT_URL = 'car_list'
+LOGIN_URL = 'login'
