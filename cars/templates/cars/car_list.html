@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2>Доступные автомобили</h2>
+<a href="{% url 'car_create' %}">+ Добавить объявление</a>
+<ul>
+    {% for car in cars %}
+        <li>
+            <strong>{{ car.title }}</strong> — {{ car.price_per_day }}₽/день <br>
+            {% if car.image %}
+                <img src="{{ car.image.url }}" width="200">
+            {% endif %}
+            <p>{{ car.description|truncatewords:20 }}</p>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
