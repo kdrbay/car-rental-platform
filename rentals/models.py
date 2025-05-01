@@ -1,10 +1,10 @@
 from django.db import models
-from users.models import User
+from users.models import CustomUser
 from cars.models import Car
 
 class Rental(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='rental_records')
-    renter = models.ForeignKey(User, related_name='rentals', on_delete=models.CASCADE)
+    renter = models.ForeignKey(CustomUser, related_name='rentals', on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)

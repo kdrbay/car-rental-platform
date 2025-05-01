@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import User
+from users.models import CustomUser
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -17,7 +17,7 @@ class Car(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='cars/', blank=True, null=True)
     category = models.ForeignKey(Category, related_name='cars', on_delete=models.SET_NULL, null=True)
-    owner = models.ForeignKey(User, related_name='cars', on_delete=models.CASCADE)
+    owner = models.ForeignKey(CustomUser, related_name='cars', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.brand} {self.model} ({self.year})'
@@ -26,7 +26,7 @@ from django.utils import timezone
 
 class Rental(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_rentals')
-    renter = models.ForeignKey(User, on_delete=models.CASCADE)
+    renter = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -38,11 +38,10 @@ class Rental(models.Model):
         return self.end_date >= timezone.now().date()
 
 from django.db import models
-from django.contrib.auth.models import User
 
 class Review(models.Model):
     car = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='car_reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(default=5)  # от 1 до 5
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
