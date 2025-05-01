@@ -36,3 +36,8 @@ def rent_car(request, car_id):
     else:
         form = RentalForm()
     return render(request, 'cars/rent_car.html', {'form': form, 'car': car})
+
+@login_required
+def my_rentals(request):
+    rentals = Rental.objects.filter(renter=request.user).order_by('-start_date')
+    return render(request, 'cars/my_rentals.html', {'rentals': rentals})

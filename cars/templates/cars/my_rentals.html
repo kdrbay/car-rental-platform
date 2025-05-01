@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2>Мои аренды</h2>
+{% if rentals %}
+    <ul>
+        {% for rental in rentals %}
+            <li>
+                <strong>{{ rental.car.title }}</strong><br>
+                С {{ rental.start_date }} по {{ rental.end_date }}
+                {% if rental.is_active %}
+                    <span style="color: green;">(Активно)</span>
+                {% else %}
+                    <span style="color: gray;">(Завершено)</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Вы ещё не арендовали ни одного авто.</p>
+{% endif %}
+{% endblock %}
