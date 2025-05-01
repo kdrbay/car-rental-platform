@@ -164,4 +164,9 @@ def car_list(request):
     if query:
         cars = cars.filter(Q(title__icontains=query) | Q(description__icontains=query))
 
-    return render(request, 'cars/car_list.html', {'cars': cars, 'categories': categories})
+    # Пагинация
+    paginator = Paginator(cars, 5)  # 5 объявлений на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'cars/car_list.html', {'page_obj': page_obj, 'categories': categories})
