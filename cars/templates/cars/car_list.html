@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Доступные автомобили</h2>
-<a href="{% url 'car_create' %}">+ Добавить объявление</a>
+<a href="{% url 'car_create' %}">+ Новое объявление</a>
 
 <!-- Форма фильтрации -->
 <form method="get">
@@ -20,6 +20,10 @@
 
 <!-- Список автомобилей -->
 <ul>
+    {% if car.owner == user %}
+        <a href="{% url 'car_update' car.pk %}">Редактировать</a>
+        <a href="{% url 'car_delete' car.pk %}">Удалить</a>
+    {% endif %}
     {% for car in cars %}
         <li>
             <strong>{{ car.title }}</strong> — {{ car.price_per_day }}₽/день <br>
