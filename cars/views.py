@@ -68,3 +68,31 @@ def car_detail(request, car_id):
         'reviews': reviews,
         'review_form': review_form
     })
+
+from django.db.models import Q
+
+def car_list(request):
+    cars = Car.objects.all()
+    categories = Category.objects.all()
+
+    # Фильтрация
+    query = request.GET.get('q')
+    if query:
+        cars = cars.filter(Q(title__icontains=query) | Q(description__icontains=query))
+
+    category_id = request.GET.get('category')
+    if category_id:
+        cars = cars.filter(category_id=category_id)
+
+    min_price = request.GET.get('min_price')
+    if min_price:
+        cars = cars.filter(price_per_day__gte=min_price)
+
+    max_price = request.GET.get('max_price')
+    if max_price:
+        cars = cars.filter(price_per_day__lte=max_price)
+
+    return render(request, 'cars/car_list.html', {
+        'cars': cars,
+        'categories': categories,
+    })

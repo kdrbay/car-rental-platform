@@ -3,14 +3,31 @@
 {% block content %}
 <h2>Доступные автомобили</h2>
 <a href="{% url 'car_create' %}">+ Добавить объявление</a>
+
+<!-- Форма фильтрации -->
+<form method="get">
+    <input type="text" name="q" placeholder="Поиск по названию или описанию" value="{{ request.GET.q }}">
+    <select name="category">
+        <option value="">Выберите категорию</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="number" name="min_price" placeholder="Минимальная цена" value="{{ request.GET.min_price }}">
+    <input type="number" name="max_price" placeholder="Максимальная цена" value="{{ request.GET.max_price }}">
+    <button type="submit">Фильтровать</button>
+</form>
+
+<!-- Список автомобилей -->
 <ul>
-    {<a href="{% url 'rent_car' car.id %}">Арендовать</a>
+    {% for car in cars %}
         <li>
             <strong>{{ car.title }}</strong> — {{ car.price_per_day }}₽/день <br>
             {% if car.image %}
                 <img src="{{ car.image.url }}" width="200">
             {% endif %}
             <p>{{ car.description|truncatewords:20 }}</p>
+            <a href="{% url 'rent_car' car.id %}">Арендовать</a>
         </li>
     {% endfor %}
 </ul>
