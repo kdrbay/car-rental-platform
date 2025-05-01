@@ -41,3 +41,30 @@ def rent_car(request, car_id):
 def my_rentals(request):
     rentals = Rental.objects.filter(renter=request.user).order_by('-start_date')
     return render(request, 'cars/my_rentals.html', {'rentals': rentals})
+
+from .forms import ReviewForm
+
+def car_detail(request, car_id):
+    car = get_object_or_404(Car, pk=car_id)
+    reviews = car.reviews.select_related('user').order_by('-created_at')
+    review_form = None
+
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                new_review = review_form.save(commit=False)
+                new_review.car = car
+                new_review.user = request.user
+                new_review.save()
+                return redirect('car_detail', car_id=car.id)
+        else:
+            # Если пользователь уже оставлял отзыв — не показываем форму
+            if not car.reviews.filter(user=request.user).exists():
+                review_form = ReviewForm()
+
+    return render(request, 'cars/car_detail.html', {
+        'car': car,
+        'reviews': reviews,
+        'review_form': review_form
+    })

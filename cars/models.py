@@ -36,3 +36,19 @@ class Rental(models.Model):
 
     def is_active(self):
         return self.end_date >= timezone.now().date()
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class Review(models.Model):
+    car = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='car_reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(default=5)  # от 1 до 5
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('car', 'user')  # один отзыв на машину от одного пользователя
+
+    def __str__(self):
+        return f"Отзыв от {self.user.username} на {self.car.title}"

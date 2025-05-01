@@ -10,3 +10,25 @@
     <img src="{{ car.image.url }}" alt="Фото авто">
 {% endif %}
 {% endblock %}
+
+<h3>Отзывы:</h3>
+{% if reviews %}
+    {% for review in reviews %}
+        <p><strong>{{ review.user.username }}</strong> (оценка: {{ review.rating }}/5)<br>
+        {{ review.comment }}<br>
+        <small>{{ review.created_at|date:"d M Y H:i" }}</small></p>
+    {% endfor %}
+{% else %}
+    <p>Пока отзывов нет.</p>
+{% endif %}
+
+{% if user.is_authenticated and review_form %}
+    <h4>Оставить отзыв:</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+{% elif not user.is_authenticated %}
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+{% endif %}
