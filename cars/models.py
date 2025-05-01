@@ -21,3 +21,18 @@ class Car(models.Model):
 
     def __str__(self):
         return f'{self.brand} {self.model} ({self.year})'
+
+from django.utils import timezone
+
+class Rental(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_rentals')
+    renter = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.renter.username} → {self.car.title}"
+
+    def is_active(self):
+        return self.end_date >= timezone.now().date()

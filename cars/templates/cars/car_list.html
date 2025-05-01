@@ -4,7 +4,7 @@
 <h2>Доступные автомобили</h2>
 <a href="{% url 'car_create' %}">+ Добавить объявление</a>
 <ul>
-    {% for car in cars %}
+    {<a href="{% url 'rent_car' car.id %}">Арендовать</a>
         <li>
             <strong>{{ car.title }}</strong> — {{ car.price_per_day }}₽/день <br>
             {% if car.image %}
