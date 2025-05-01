@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'cars',
+    'rentals',
+    'user_messages',
+    'reviews',
 ]
 
 MIDDLEWARE = [
