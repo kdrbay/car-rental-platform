@@ -139,3 +139,29 @@ def car_delete(request, pk):
 def my_cars(request):
     cars = Car.objects.filter(owner=request.user)
     return render(request, 'cars/my_cars.html', {'cars': cars})
+
+from django.db.models import Q
+
+def car_list(request):
+    categories = Category.objects.all()
+    cars = Car.objects.all()
+
+    # Фильтрация по цене
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price:
+        cars = cars.filter(price_per_day__gte=min_price)
+    if max_price:
+        cars = cars.filter(price_per_day__lte=max_price)
+
+    # Фильтрация по категории
+    category = request.GET.get('category')
+    if category:
+        cars = cars.filter(category__name=category)
+
+    # Поиск по названию
+    query = request.GET.get('q')
+    if query:
+        cars = cars.filter(Q(title__icontains=query) | Q(description__icontains=query))
+
+    return render(request, 'cars/car_list.html', {'cars': cars, 'categories': categories})
