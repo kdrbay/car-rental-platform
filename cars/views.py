@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Car
+from .models import Car, Category, Rental
 from .forms import CarForm
 
 def car_list(request):
@@ -134,3 +134,8 @@ def car_delete(request, pk):
         car.delete()
         return redirect('car_list')
     return render(request, 'cars/car_confirm_delete.html', {'car': car})
+
+@login_required
+def my_cars(request):
+    cars = Car.objects.filter(owner=request.user)
+    return render(request, 'cars/my_cars.html', {'cars': cars})

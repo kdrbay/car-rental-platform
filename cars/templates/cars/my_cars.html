@@ -1,0 +1,14 @@
+<h2>Мои объявления</h2>
+
+{% for car in cars %}
+    <div>
+        <h3>{{ car.title }}</h3>
+        <p>{{ car.price_per_day }} руб/день</p>
+        <a href="{% url 'car_update' car.pk %}">Редактировать</a>
+        <a href="{% url 'car_delete' car.pk %}">Удалить</a>
+    </div>
+{% empty %}
+    <p>У вас пока нет объявлений.</p>
+{% endfor %}
+
+<a href="{% url 'car_create' %}">+ Новое объявление</a>

@@ -9,3 +9,8 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'phone_number', 'password1', 'password2']
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email')  # или добавьте другие поля, если есть
