@@ -1,22 +1,74 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-<h2>Мои аренды</h2>
-{% if rentals %}
-    <ul>
+<h2 style="text-align: center; margin-top: 30px; color: #2c3e50;">Мои аренды</h2>
+
+<div class="cars-list">
+    {% if rentals %}
         {% for rental in rentals %}
-            <li>
-                <strong>{{ rental.car.title }}</strong><br>
-                С {{ rental.start_date }} по {{ rental.end_date }}
-                {% if rental.is_active %}
-                    <span style="color: green;">(Активно)</span>
-                {% else %}
-                    <span style="color: gray;">(Завершено)</span>
+            <div class="car-item">
+                {% if rental.car.image %}
+                    <img src="{{ rental.car.image.url }}" alt="{{ rental.car.title }}">
                 {% endif %}
-            </li>
+                <h3>{{ rental.car.title }}</h3>
+                <p>Срок аренды: {{ rental.start_date }} – {{ rental.end_date }}</p>
+                {% if rental.is_active %}
+                    <p style="color: #27ae60; font-weight: bold;">Активна</p>
+                {% else %}
+                    <p style="color: gray; font-weight: bold;">Завершена</p>
+                {% endif %}
+                <a href="{% url 'car_detail' rental.car.pk %}">Посмотреть авто</a>
+            </div>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>Вы ещё не арендовали ни одного авто.</p>
-{% endif %}
+    {% else %}
+        <p style="text-align: center;">Вы ещё не арендовали ни одного авто.</p>
+    {% endif %}
+</div>
+
+<style>
+    .cars-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 0 20px 40px;
+        margin-top: 20px;
+    }
+
+    .car-item {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .car-item img {
+        width: 100%;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .car-item h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+        color: #2c3e50;
+    }
+
+    .car-item p {
+        margin: 5px 0;
+    }
+
+    .car-item a {
+        display: inline-block;
+        margin-top: 10px;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .car-item a:hover {
+        background-color: #2980b9;
+    }
+</style>
 {% endblock %}

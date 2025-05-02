@@ -141,6 +141,7 @@ def my_cars(request):
     return render(request, 'cars/my_cars.html', {'cars': cars})
 
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 def car_list(request):
     categories = Category.objects.all()

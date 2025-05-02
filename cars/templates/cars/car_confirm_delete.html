@@ -1,6 +1,62 @@
+{% extends "core/base.html" %}
+
+{% block content %}
 <h2>Удалить "{{ car.title }}"?</h2>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Подтвердить удаление</button>
-</form>
-<a href="{% url 'car_list' %}">Отмена</a>
+
+<div class="delete-confirmation">
+    <form method="post">
+        {% csrf_token %}
+        <p>Вы уверены, что хотите удалить это объявление? Это действие необратимо.</p>
+        <button type="submit" class="btn btn-danger">Подтвердить удаление</button>
+    </form>
+    
+    <a href="{% url 'car_list' %}" class="btn btn-cancel">Отмена</a>
+</div>
+
+<style>
+    .delete-confirmation {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .delete-confirmation p {
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+    }
+
+    .btn-cancel {
+        background-color: #95a5a6;
+        color: #fff;
+    }
+
+    .btn-cancel:hover {
+        background-color: #7f8c8d;
+    }
+</style>
+{% endblock %}
