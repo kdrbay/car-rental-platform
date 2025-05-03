@@ -10,12 +10,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("cars", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Message",
+            name="Car",
             fields=[
                 (
                     "id",
@@ -26,21 +27,35 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("content", models.TextField()),
-                ("sent_at", models.DateTimeField(auto_now_add=True)),
+                ("title", models.CharField(max_length=100)),
+            ],
+        ),
+        migrations.CreateModel(
+            name="Review",
+            fields=[
                 (
-                    "receiver",
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rating", models.IntegerField()),
+                ("comment", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "car",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="received_messages",
-                        to=settings.AUTH_USER_MODEL,
+                        on_delete=django.db.models.deletion.CASCADE, to="cars.car"
                     ),
                 ),
                 (
-                    "sender",
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="sent_messages",
+                        related_name="core_reviews",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),

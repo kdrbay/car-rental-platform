@@ -2,86 +2,114 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Редактировать профиль</title>
+    <title>Редактирование профиля</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            margin: 0;
+            padding: 0;
         }
+
         .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: 50px auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fff;
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         }
+
         h2 {
             text-align: center;
+            margin-bottom: 25px;
+            color: #333;
         }
+
         label {
+            font-weight: bold;
             display: block;
             margin-top: 15px;
+            color: #444;
         }
-        input {
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
         }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
         button {
-            margin-top: 20px;
             width: 100%;
-            padding: 10px;
+            padding: 14px;
             background-color: #007bff;
             color: white;
+            font-weight: bold;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
         a {
             display: block;
             text-align: center;
             margin-top: 15px;
             color: #555;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Маска поля номера */
+        input[type="tel"]::placeholder {
+            color: #aaa;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Редактировать профиль</h2>
+        <h2>Редактирование профиля</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Сохранить</button>
+            <button type="submit">Сохранить изменения</button>
         </form>
-        <a href="{% url 'profile' %}">Назад в профиль</a>
+        <a href="{% url 'profile' %}">← Назад в профиль</a>
     </div>
 
     <script>
+        // Пример автоматической маски для ввода телефона Казахстана
         document.addEventListener('DOMContentLoaded', function () {
-            const input = document.getElementById('id_phone_number');
-            if (input) {
-                input.placeholder = "+7 (___) ___-__-__";
-
-                input.addEventListener('input', function () {
-                    let x = input.value.replace(/\D/g, '').substring(0, 11);
-                    if (!x.startsWith("7")) {
-                        x = "7" + x;
-                    }
-                    let formatted = '+7';
-                    if (x.length > 1) {
-                        formatted += ' (' + x.substring(1, 4);
-                    }
-                    if (x.length >= 5) {
-                        formatted += ') ' + x.substring(4, 7);
-                    }
-                    if (x.length >= 8) {
-                        formatted += '-' + x.substring(7, 9);
-                    }
-                    if (x.length >= 10) {
-                        formatted += '-' + x.substring(9, 11);
-                    }
-                    input.value = formatted;
+            const telInput = document.querySelector('input[type="tel"]');
+            if (telInput) {
+                telInput.placeholder = "+7 (___) ___-__-__";
+                telInput.addEventListener('input', function (e) {
+                    let x = telInput.value.replace(/\D/g, '').slice(0, 11);
+                    let formatted = '+7 ';
+                    if (x.length >= 1) formatted += '(' + x.slice(1, 4);
+                    if (x.length >= 4) formatted += ') ' + x.slice(4, 7);
+                    if (x.length >= 7) formatted += '-' + x.slice(7, 9);
+                    if (x.length >= 9) formatted += '-' + x.slice(9, 11);
+                    telInput.value = formatted;
                 });
             }
         });

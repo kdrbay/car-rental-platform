@@ -1,31 +1,28 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-<h2 style="text-align: center; margin-top: 30px; color: #2c3e50;">Мои аренды</h2>
+<h2 style="text-align: center; margin-top: 30px; color: #2c3e50;">Доступные автомобили</h2>
 
 <div class="cars-list">
-    {% if rentals %}
-        {% for rental in rentals %}
+    {% if cars %}
+        {% for car in cars %}
             <div class="car-item">
-                {% if rental.car.image %}
-                    <img src="{{ rental.car.image.url }}" alt="{{ rental.car.title }}">
+                {% if car.image %}
+                    <img src="{{ car.image.url }}" alt="{{ car.title }}">
                 {% endif %}
-                <h3>{{ rental.car.title }}</h3>
-                <p>Срок аренды: {{ rental.start_date }} – {{ rental.end_date }}</p>
-                {% if rental.is_active %}
-                    <p style="color: #27ae60; font-weight: bold;">Активна</p>
-                {% else %}
-                    <p style="color: gray; font-weight: bold;">Завершена</p>
-                {% endif %}
-                <a href="{% url 'car_detail' rental.car.pk %}">Посмотреть авто</a>
+                <h3>{{ car.brand }} {{ car.model }}</h3>
+                <p>Цена за день: {{ car.price_per_day }} KZT</p>
+                <p>{{ car.description }}</p>
+                <a href="{% url 'car_detail' car.id %}">Посмотреть авто</a>
             </div>
         {% endfor %}
     {% else %}
-        <p style="text-align: center;">Вы ещё не арендовали ни одного авто.</p>
+        <p style="text-align: center;">Нет доступных автомобилей.</p>
     {% endif %}
 </div>
 
 <style>
+    /* Стили для списка автомобилей */
     .cars-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -34,17 +31,24 @@
         margin-top: 20px;
     }
 
+    /* Каждый элемент автомобиля */
     .car-item {
         background-color: #fff;
-        padding: 15px;
+        padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .car-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
     }
 
     .car-item img {
         width: 100%;
-        border-radius: 4px;
-        margin-bottom: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
     }
 
     .car-item h3 {
@@ -55,20 +59,42 @@
 
     .car-item p {
         margin: 5px 0;
+        color: #7f8c8d;
     }
 
     .car-item a {
         display: inline-block;
-        margin-top: 10px;
+        margin-top: 15px;
         background-color: #3498db;
         color: #fff;
-        padding: 8px 12px;
+        padding: 10px 20px;
         border-radius: 4px;
         text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
     }
 
     .car-item a:hover {
         background-color: #2980b9;
+    }
+
+    /* Добавление адаптивности для мобильных устройств */
+    @media (max-width: 768px) {
+        .cars-list {
+            grid-template-columns: 1fr;
+        }
+
+        .car-item {
+            padding: 15px;
+        }
+
+        .car-item img {
+            border-radius: 6px;
+        }
+
+        .car-item h3 {
+            font-size: 1.1rem;
+        }
     }
 </style>
 {% endblock %}

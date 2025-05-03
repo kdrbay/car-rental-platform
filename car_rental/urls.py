@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('user/', include('users.urls')),
     path('', include('cars.urls')),
+    path('', include('core.urls')),
 ]
 
 if settings.DEBUG:

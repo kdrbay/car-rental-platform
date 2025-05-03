@@ -6,4 +6,5 @@ urlpatterns = [
     path('car/<int:car_id>/', views.car_detail, name='car_detail'),
     path('category/<int:category_id>/', views.category_detail, name='category_detail'),
     path('rent/', include('rentals.urls')),
+    path('car/<int:car_id>/review/', views.leave_review, name='leave_review'),
 ]

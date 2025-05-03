@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оставить отзыв</title>
+</head>
+<body>
+    <h2>Оставить отзыв для {{ car.title }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+
+    <a href="{% url 'car_detail' car.id %}">Назад к машине</a>
+</body>
+</html>
