@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -61,7 +61,7 @@ ROOT_URLCONF = "car_rental.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -136,11 +136,10 @@ CSRF_TRUSTED_ORIGINS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LOGIN_REDIRECT_URL = 'profile'
-LOGOUT_REDIRECT_URL = 'login'
-
 AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_REDIRECT_URL = 'car_list'
-LOGOUT_REDIRECT_URL = 'car_list'
 LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'  # после выхода, перенаправление на страницу входа
+LOGIN_REDIRECT_URL = 'car_list'  # после входа, перенаправление на список машин (или другую страницу)
+LOGIN_REDIRECT_URL = 'profile'

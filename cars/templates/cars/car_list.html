@@ -1,69 +1,49 @@
 {% extends "core/base.html" %}
 
+{% block title %}Список автомобилей - Car Rental{% endblock %}
+
 {% block content %}
-<h2>Доступные автомобили</h2>
-<a href="{% url 'car_create' %}">+ Новое объявление</a>
-
-<!-- Форма фильтрации -->
-<h1>Объявления</h1>
-<form method="get">
-    <input type="text" name="q" placeholder="Поиск по названию" value="{{ request.GET.q }}">
-    <input type="number" name="min_price" placeholder="Мин. цена" value="{{ request.GET.min_price }}">
-    <input type="number" name="max_price" placeholder="Макс. цена" value="{{ request.GET.max_price }}">
-        
-    <select name="category">
-        <option value="">Все категории</option>
-        {% for category in categories %}
-            <option value="{{ category.name }}" {% if category.name == request.GET.category %}selected{% endif %}>
-                {{ category.name }}
-            </option>
-        {% endfor %}
-    </select>
-    
-    <button type="submit">Применить фильтры</button>
-</form>
-{% for car in cars %}
-    <div>
-        <h3>{{ car.title }}</h3>
-        <p>{{ car.price_per_day }} руб/день</p>
-        <p>Категория: {{ car.category.name }}</p>
-        <a href="{% url 'car_detail' car.pk %}">Подробнее</a>
-    </div>
-{% empty %}
-    <p>Нет объявлений, удовлетворяющих вашим критериям.</p>
-{% endfor %}
-<div>
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Первая</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Предыдущая</a>
-        {% endif %}
-
-        <span class="current">
-            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Следующая</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Последняя</a>
-        {% endif %}
-    </span>
+<div class="filters">
+    <form method="get">
+        <input type="text" name="q" placeholder="Поиск по названию" value="{{ request.GET.q }}">
+        <input type="number" name="min_price" placeholder="Мин. цена" value="{{ request.GET.min_price }}">
+        <input type="number" name="max_price" placeholder="Макс. цена" value="{{ request.GET.max_price }}">
+        <select name="category">
+            <option value="">Все категории</option>
+            {% for category in categories %}
+                <option value="{{ category.name }}" {% if category.name == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Применить фильтры</button>
+    </form>
 </div>
-<!-- Список автомобилей -->
-<ul>
-    {% if car.owner == user %}
-        <a href="{% url 'car_update' car.pk %}">Редактировать</a>
-        <a href="{% url 'car_delete' car.pk %}">Удалить</a>
-    {% endif %}
-    {% for car in cars %}
-        <li>
-            <strong>{{ car.title }}</strong> — {{ car.price_per_day }}₽/день <br>
-            {% if car.image %}
-                <img src="{{ car.image.url }}" width="200">
-            {% endif %}
-            <p>{{ car.description|truncatewords:20 }}</p>
-            <a href="{% url 'rent_car' car.id %}">Арендовать</a>
-        </li>
+
+<div class="cars-list">
+    {% for car in page_obj %}
+        <div class="car-item">
+            <img src="{{ car.image.url }}" alt="{{ car.title }}">
+            <h3>{{ car.title }}</h3>
+            <p>{{ car.price_per_day }} KZT/день</p>
+            <p>Категория: {{ car.category.name }}</p>
+            <a href="{% url 'car_detail' car.pk %}">Подробнее</a>
+            <a href="{% url 'rent_car' car.pk %}">Арендовать</a>
+        </div>
+    {% empty %}
+        <p style="text-align: center; color: #888;">Нет объявлений, удовлетворяющих условиям фильтра.</p>
     {% endfor %}
-</ul>
+</div>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+    {% endif %}
+
+    <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
 {% endblock %}

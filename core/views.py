@@ -13,3 +13,8 @@ def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     cars = category.cars.all()
     return render(request, 'core/category_detail.html', {'category': category, 'cars': cars})
+
+from django.shortcuts import render
+
+def car_list(request):
+    return render(request, 'core/base.html') 
