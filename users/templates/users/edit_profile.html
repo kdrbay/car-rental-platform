@@ -97,21 +97,28 @@
     </div>
 
     <script>
-        // Пример автоматической маски для ввода телефона Казахстана
         document.addEventListener('DOMContentLoaded', function () {
-            const telInput = document.querySelector('input[type="tel"]');
-            if (telInput) {
-                telInput.placeholder = "+7 (___) ___-__-__";
-                telInput.addEventListener('input', function (e) {
-                    let x = telInput.value.replace(/\D/g, '').slice(0, 11);
-                    let formatted = '+7 ';
-                    if (x.length >= 1) formatted += '(' + x.slice(1, 4);
-                    if (x.length >= 4) formatted += ') ' + x.slice(4, 7);
-                    if (x.length >= 7) formatted += '-' + x.slice(7, 9);
-                    if (x.length >= 9) formatted += '-' + x.slice(9, 11);
-                    telInput.value = formatted;
-                });
-            }
+            const phoneInput = document.querySelector('input[name="phone_number"]');
+
+            phoneInput.addEventListener('input', function (e) {
+                let x = phoneInput.value.replace(/\D/g, '').substring(1);
+                let formatted = '+7';
+
+                if (x.length > 0) {
+                    formatted += ' (' + x.substring(0, 3);
+                }
+                if (x.length >= 4) {
+                    formatted += ') ' + x.substring(3, 6);
+                }
+                if (x.length >= 7) {
+                    formatted += '-' + x.substring(6, 8);
+                }
+                if (x.length >= 9) {
+                    formatted += '-' + x.substring(8, 10);
+                }
+
+                phoneInput.value = formatted;
+            });
         });
     </script>
 </body>

@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm
 from .forms import CustomUserCreationForm
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+from .forms import ProfileUpdateForm
+from .forms import ProfileForm
 
 def register(request):
     if request.method == 'POST':
@@ -29,28 +29,16 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 
 def custom_logout(request):
-    logout(request)  # Выполнить выход
-    return redirect('login')  # Перенаправить на страницу входа
-
-from django.shortcuts import render
-@login_required
-def profile_view(request):
-    return render(request, 'users/profile.html')
-
-# users/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import ProfileUpdateForm
-from .forms import ProfileForm
+    logout(request)  
+    return redirect('login')  
 
 @login_required
 def edit_profile(request):
-    user = request.user
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('profile')
     else:
-        form = ProfileForm(instance=user)
+        form = ProfileUpdateForm(instance=request.user)
     return render(request, 'users/edit_profile.html', {'form': form})
