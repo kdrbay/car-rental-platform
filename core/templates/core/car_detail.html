@@ -70,6 +70,10 @@
            style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
            WhatsApp
         </a>
+        <a href="#" onclick="sendInstagram()" 
+            style="display: inline-block; background-color: #E1306C; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+            Instagram
+        </a>
     </div>
 </div>
 
@@ -121,6 +125,27 @@
     {% endif %}
 </div>
 
+<script>
+    function buildMessage() {
+        const car = "{{ car.brand }} {{ car.model }}";
+        const price = "{{ car.price_per_day }}";
+        return `Здравствуйте! Я хочу арендовать ${car}. Цена за день ${price} KZT. Свяжитесь со мной, пожалуйста.`;
+    }
+
+    function sendWhatsApp() {
+        const phone = "{{ car.owner.phone_number|default:'77777777777' }}";
+        const message = encodeURIComponent(buildMessage());
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    }
+
+    function sendInstagram() {
+        const message = buildMessage();
+        navigator.clipboard.writeText(message).then(() => {
+            alert("Сообщение скопировано! Вставьте его в Instagram-сообщение.");
+            window.open("https://instagram.com/kdrbay.a", "_blank");
+        });
+    }
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
