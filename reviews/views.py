@@ -1,20 +1,21 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Review
 from .forms import ReviewForm
-from cars.models import Car
 
-@login_required
-def leave_review(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.reviewer = request.user
+def car_detail(request, pk):
+    car = get_object_or_404(Car, pk=pk)
+    reviews = car.reviews.order_by('-created_at')
+
+    if request.method == 'POST' and 'submit_review' in request.POST:
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
             review.car = car
             review.save()
-            return redirect('car_detail', car_id=car.id)
+            return redirect('car_detail', pk=car.pk)
     else:
-        form = ReviewForm()
-    return render(request, 'reviews/leave_review.html', {'form': form, 'car': car})
+        review_form = ReviewForm()
+
+    return render(request, 'car_detail.html', {
+        'car': car,
+        'reviews': reviews,
+        'review_form': review_form,
+    })

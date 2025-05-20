@@ -118,8 +118,11 @@
 
 <nav>
     <a href="{% url 'home' %}">Главная</a>
-    <a href="{% url 'my_cars' %}">Мои объявления</a>
-    <a href="{% url 'my_rentals' %}">Мои аренды</a>
+    {% if user.is_superuser or user.is_seller %}
+                <a href="{% url 'my_cars' %}">Мои объявления</a>
+            {% elif user.role == 'user' %}
+                <a href="{% url 'my_rentals' %}">Мои аренды</a>
+            {% endif %}
     <a href="{% url 'profile' %}">Профиль</a>
     <a href="{% url 'logout' %}">Выйти</a>
 </nav>

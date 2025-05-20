@@ -1,18 +1,225 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Аренда автомобиля</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0; padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+        }
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button, .chat-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        button:hover, .chat-button:hover {
+            background-color: #2980b9;
+        }
+        .or-text {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #999;
+        }
+        .contact-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .contact-buttons a {
+            flex: 1;
+            background-color: #25d366;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px 0;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .contact-buttons a.telegram {
+            background-color: #0088cc;
+        }
+        .contact-buttons a:hover {
+            opacity: 0.9;
+        }
+        .price-calculator {
+            background: #eef6fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .price-result {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-    <h2>Арендовать: {{ car.brand }} {{ car.model }}</h2>
-    <p>Цена за день: {{ car.price_per_day }} KZT</p>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Арендовать</button>
-    </form>
+    <div style="padding: 20px;">
+        <a href="/" style="
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        ">🏠 Home</a>
+    </div>
+    <div class="container">
+        <h2>Арендовать: {{ car.brand }} {{ car.model }}</h2>
+
+        <div class="price-calculator">
+            <h3>Calculate a price</h3>
+            <label for="pickup">Pickup date</label>
+            <input type="date" id="pickup" name="pickup" />
+            <label for="dropoff">Drop off date</label>
+            <input type="date" id="dropoff" name="dropoff" />
+            <div class="price-result" id="priceResult">Цена: 0 KZT</div>
+        </div>
+
+        <form method="post" id="reservationForm">
+            {% csrf_token %}
+            <label for="name">Name*</label>
+            <input type="text" id="name" name="name" required placeholder="Ваше имя" />
+
+            <label for="phone_number">Phone*</label>
+            <input type="tel" name="phone_number" id="phone_number" required placeholder="+7 (___) ___-__-__" />
+
+            <div class="contact-buttons">
+                <button type="button" onclick="sendWhatsAppMessage()" class="chat-button whatsapp">Отправить в WhatsApp</button>
+                <button type="button" onclick="copyAndOpenInstagram()" class="chat-button instagram">Заявка через Instagram</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const pickupInput = document.getElementById('pickup');
+        const dropoffInput = document.getElementById('dropoff');
+        const priceResult = document.getElementById('priceResult');
+
+        const pricePerDay = {{ car.price_per_day|default:0 }};
+
+        function calculatePrice() {
+            const pickupDate = new Date(pickupInput.value);
+            const dropoffDate = new Date(dropoffInput.value);
+
+            if (pickupInput.value && dropoffInput.value && dropoffDate > pickupDate) {
+                const diffTime = dropoffDate - pickupDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const total = diffDays * pricePerDay;
+                priceResult.textContent = `Цена: ${total.toLocaleString()} KZT (${diffDays} ${diffDays === 1 ? 'день' : 'дня'})`;
+            } else {
+                priceResult.textContent = 'Цена: 0 KZT';
+            }
+        }
+
+        pickupInput.addEventListener('change', calculatePrice);
+        dropoffInput.addEventListener('change', calculatePrice);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const phoneInput = document.querySelector('input[name="phone_number"]');
+
+            phoneInput.addEventListener('input', function () {
+                let x = phoneInput.value.replace(/\D/g, '').substring(1);
+                let formatted = '+7';
+
+                if (x.length > 0) {
+                    formatted += ' (' + x.substring(0, 3);
+                }
+                if (x.length >= 4) {
+                    formatted += ') ' + x.substring(3, 6);
+                }
+                if (x.length >= 7) {
+                    formatted += '-' + x.substring(6, 8);
+                }
+                if (x.length >= 9) {
+                    formatted += '-' + x.substring(8, 10);
+                }
+
+                phoneInput.value = formatted;
+            });
+        });
+    </script>
+
+    <script>
+        function copyAndOpenInstagram() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone_number').value;
+            const pickup = document.getElementById('pickup').value;
+            const dropoff = document.getElementById('dropoff').value;
+            const car = "{{ car.brand }} {{ car.model }}";
+
+            const message = `Здравствуйте! Меня зовут ${name}. Хочу арендовать ${car} с ${pickup} по ${dropoff}. Мой номер: ${phone}`;
+
+            navigator.clipboard.writeText(message).then(() => {
+                alert("Текст заявки скопирован! Вставьте его в Instagram-сообщение.");
+                window.open("https://instagram.com/kdrbay.a", "_blank");
+            });
+        }
+
+        function sendWhatsAppMessage() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone_number').value;
+            const pickup = document.getElementById('pickup').value;
+            const dropoff = document.getElementById('dropoff').value;
+            const car = "{{ car.brand }} {{ car.model }}";
+
+            const message = `Здравствуйте! Меня зовут ${name}. Хочу арендовать ${car} с ${pickup} по ${dropoff}. Мой номер: ${phone}`;
+            const encodedMessage = encodeURIComponent(message);
+            const waNumber = "{{ car.owner.phone_number|default:'77777777777' }}";
+
+            window.open(`https://wa.me/${waNumber}?text=${encodedMessage}`, "_blank");
+        }
+    </script>
 </body>
 </html>

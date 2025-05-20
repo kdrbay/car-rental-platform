@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'users',
     'cars',
     'rentals',
-    'user_messages',
     'reviews',
     'core',
 ]

@@ -1,4 +1,3 @@
-# core/forms.py
 from django import forms
 from .models import Review
 
@@ -7,6 +6,6 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'rating': forms.Select(choices=[(i, str(i)) for i in range(1, 6)]),
             'comment': forms.Textarea(attrs={'rows': 4}),
         }

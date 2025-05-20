@@ -1,13 +1,11 @@
 from django.db import models
-from users.models import CustomUser
-from cars.models import Car
 
 class Review(models.Model):
-    car = models.ForeignKey(Car, related_name='reviews', on_delete=models.CASCADE)
-    reviewer = models.ForeignKey(CustomUser, related_name='reviews', on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Рейтинг от 1 до 5
-    comment = models.TextField(blank=True, null=True)
+    car = models.ForeignKey('cars.Car', on_delete=models.CASCADE, related_name='reviews')
+    name = models.CharField(max_length=100, null=True, blank=True)
+    rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    comment = models.TextField(default='', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Review for {self.car} by {self.reviewer}'
+        return f"{self.name} — {self.rating}★"

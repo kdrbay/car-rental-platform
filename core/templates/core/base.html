@@ -67,7 +67,7 @@
         <nav>
             <a href="{% url 'car_list' %}">Список машин</a>
             {% if user.is_authenticated %}
-                {% if user.role == 'owner' %}
+                {% if user.is_superuser or user.is_seller %}
                     <a href="{% url 'my_cars' %}">Мои объявления</a>
                 {% elif user.role == 'user' %}
                     <a href="{% url 'my_rentals' %}">Мои аренды</a>

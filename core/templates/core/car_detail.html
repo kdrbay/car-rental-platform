@@ -78,7 +78,6 @@
     <div style="display: flex; flex-wrap: wrap; gap: 20px;">
         <div><strong>Модель:</strong> {{ car.model }}</div>
         <div><strong>Категория:</strong> {{ car.category }}</div>
-        <div><strong>Год выпуска:</strong> {{ car.year }}</div>
         <div><strong>Тип привода:</strong> {{ car.drive_type }}</div>
         <div><strong>Разгон 0-100 км/ч:</strong> {{ car.acceleration }} сек</div>
         <div><strong>Цвет кузова:</strong> {{ car.color }}</div>
@@ -96,10 +95,11 @@
     </div>
 </div>
 
-<div class="container" style="max-width: 1200px; margin: 40px auto; background-color: #fff; padding: 20px; border-radius: 10px;">
+<div class="container" style="max-width: 1200px; margin: 40px auto;">
     <h3>Отзывы:</h3>
+
     {% for review in reviews %}
-        <div class="review">
+        <div class="review" style="background: #f2f2f2; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
             <p><strong>{{ review.user.username }}</strong> (оценка: {{ review.rating }}/5)</p>
             <p>{{ review.comment }}</p>
             <small>{{ review.created_at|date:"d M Y H:i" }}</small>
@@ -107,18 +107,20 @@
     {% empty %}
         <p>Пока отзывов нет.</p>
     {% endfor %}
-    
+
     {% if user.is_authenticated %}
-        <a href="{% url 'leave_review' car.id %}">Оставить отзыв</a>
         <form method="post">
             {% csrf_token %}
             {{ review_form.as_p }}
-            <button type="submit">Отправить</button>
+            <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px;">
+                Оставить отзыв
+            </button>
         </form>
     {% else %}
         <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
     {% endif %}
 </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
